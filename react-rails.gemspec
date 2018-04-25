@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'railties', '>= 3.2'
   s.add_dependency 'tilt'
   s.add_dependency 'babel-transpiler', '>=0.7.0'
+  s.add_dependency 'httparty'
 
   s.files = Dir[
     'lib/**/*',
