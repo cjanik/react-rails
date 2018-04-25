@@ -31,7 +31,7 @@ module React
 
         prerender_options = options[:prerender]
         if prerender_options
-          block = Proc.new{ concat(prerender_component(name, props, prerender_options)) }
+          block = Proc.new{ concat(prerender_component(name, props, prerender_options).html_safe) }
         end
 
         html_options = options.reverse_merge(:data => {})
@@ -46,8 +46,8 @@ module React
 
         # remove internally used properties so they aren't rendered to DOM
         html_options.except!(:tag, :prerender, :camelize_props)
-
         rendered_tag = content_tag(html_tag, '', html_options, &block)
+
         if React::ServerRendering.renderer_options[:replay_console]
           # Grab the server-rendered console replay script
           # and move it _outside_ the container div
