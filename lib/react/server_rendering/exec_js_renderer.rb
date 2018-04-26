@@ -42,7 +42,7 @@ module React
       end
 
       def main_render(component_name, props, prerender_options)
-        HTTParty.get('http://precompilation.ifttt.me:3003/ssr', query: { component_name: component_name, props: props })
+        HTTParty.get("#{ENV['JS_RENDERER_URL']}/ssr", query: { component_name: component_name, props: props })
         # render_function = prerender_options.fetch(:render_function, 'renderToString')
         # "this.ReactRailsUJS.serverRender('#{render_function}', '#{component_name}', #{props})"
       end
