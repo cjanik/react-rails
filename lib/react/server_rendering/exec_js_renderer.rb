@@ -10,6 +10,7 @@ module React
       attr_reader :context
 
       def initialize(options={})
+        @node_server_url = options.fetch(:node_server_url, '')
         # js_code = options[:code] || raise('Pass `code:` option to instantiate a JS context!')
         # @context = ExecJS.compile(GLOBAL_WRAPPER + js_code)
       end
@@ -42,7 +43,7 @@ module React
       end
 
       def main_render(component_name, props, prerender_options)
-        HTTParty.get("#{ENV['JS_RENDERER_URL']}/ssr", query: { component_name: component_name, props: props })
+        HTTParty.get(@node_server_url, query: { component_name: component_name, props: props })
         # render_function = prerender_options.fetch(:render_function, 'renderToString')
         # "this.ReactRailsUJS.serverRender('#{render_function}', '#{component_name}', #{props})"
       end
