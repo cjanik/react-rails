@@ -1,6 +1,5 @@
 module React
   module ServerRendering
-
     # A bare-bones renderer for React.js + Exec.js
     # - Depends on global ReactRailsUJS in the ExecJS context
     # - No Rails dependency
@@ -10,17 +9,15 @@ module React
       attr_reader :context
 
       def initialize(options={})
-        @node_server_url = options.fetch(:node_server_url, '')
-        # js_code = options[:code] || raise('Pass `code:` option to instantiate a JS context!')
-        # @context = ExecJS.compile(GLOBAL_WRAPPER + js_code)
+        js_code = options[:code] || raise('Pass `code:` option to instantiate a JS context!')
+        @context = ExecJS.compile(GLOBAL_WRAPPER + js_code)
       end
 
       def render(component_name, props, prerender_options)
-        # js_executed_before = before_render(component_name, props, prerender_options)
-        # js_executed_after = after_render(component_name, props, prerender_options)
-        renderedHTML = main_render(component_name, props, prerender_options)
-        renderedHTML.to_s
-        # render_from_parts(js_executed_before, js_main_section, js_executed_after)
+        js_executed_before = before_render(component_name, props, prerender_options)
+        js_executed_after = after_render(component_name, props, prerender_options)
+        js_main_section = main_render(component_name, props, prerender_options)
+        render_from_parts(js_executed_before, js_main_section, js_executed_after)
       rescue ExecJS::ProgramError => err
         raise React::ServerRendering::PrerenderError.new(component_name, props, err)
       end
@@ -43,9 +40,8 @@ module React
       end
 
       def main_render(component_name, props, prerender_options)
-        HTTParty.get(@node_server_url, query: { component_name: component_name, props: props })
-        # render_function = prerender_options.fetch(:render_function, 'renderToString')
-        # "this.ReactRailsUJS.serverRender('#{render_function}', '#{component_name}', #{props})"
+        render_function = prerender_options.fetch(:render_function, 'renderToString')
+        "this.ReactRailsUJS.serverRender('#{render_function}', '#{component_name}', #{props})"
       end
 
       def compose_js(before, main, after)
