@@ -10,7 +10,7 @@ module React
         require 'net/http/persistent'
 
         @uri = URI(options.fetch(:node_server_url, ''))
-        @http = Net::HTTP::Persistent.new 'server_renderer'
+        @http = Net::HTTP::Persistent.new name: 'server_renderer'
       end
 
       def render(component_name, props, prerender_options)
