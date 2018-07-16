@@ -1,6 +1,5 @@
 module React
   module ServerRendering
-    require 'net/http/persistent'
 
     # This renderer class makes a request to an external node service.
     # Allows you to stub out a browser environment in node.js so you can render react components
