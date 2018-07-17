@@ -1,3 +1,4 @@
+require 'net/http/persistent'
 module React
   module ServerRendering
     # This renderer class makes a request to an external node service.
@@ -7,8 +8,6 @@ module React
     class NodeJSRenderer
       # @context is not available using this class
       def initialize(options={})
-        require 'net/http/persistent'
-
         @uri = URI(options.fetch(:node_server_url, ''))
         @http = Net::HTTP::Persistent.new name: 'server_renderer'
       end
