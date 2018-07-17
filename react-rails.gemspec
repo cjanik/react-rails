@@ -34,7 +34,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'railties', '>= 3.2'
   s.add_dependency 'tilt'
   s.add_dependency 'babel-transpiler', '>=0.7.0'
-  s.add_runtime_dependency 'net-http-persistent', '~> 3.0', :require => 'net/http/persistent'
+  s.add_runtime_dependency 'net-http-persistent', '~> 3.0'
 
   s.files = Dir[
     'lib/**/*',
