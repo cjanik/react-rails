@@ -1,3 +1,5 @@
+require 'net/http/persistent'
+
 module React
   module ServerRendering
     # This renderer class makes a request to an external node service.
