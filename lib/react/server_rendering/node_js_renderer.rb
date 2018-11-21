@@ -1,6 +1,7 @@
+require 'net/http/persistent'
+
 module React
   module ServerRendering
-
     # This renderer class makes a request to an external node service.
     # Allows you to stub out a browser environment in node.js so you can render react components
     # that have dependencies on window/document/jQuery etc
@@ -8,12 +9,14 @@ module React
     class NodeJSRenderer
       # @context is not available using this class
       def initialize(options={})
-        @node_server_url = options.fetch(:node_server_url, '')
+        @uri = URI(options.fetch(:node_server_url, ''))
+        @http = Net::HTTP::Persistent.new name: 'server_renderer'
       end
 
       def render(component_name, props, prerender_options)
         props = props.to_json
-        HTTParty.get(@node_server_url, query: { component_name: component_name, props: props }).to_s
+        @uri.query = URI.encode_www_form({ :component_name => component_name, :props => props })
+        @http.request(@uri).body
       rescue ExecJS::ProgramError => err
         raise React::ServerRendering::PrerenderError.new(component_name, props, err)
       end
