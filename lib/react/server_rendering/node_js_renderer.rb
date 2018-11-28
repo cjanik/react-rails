@@ -17,7 +17,7 @@ module React
         props = props.to_json
         @uri.query = URI.encode_www_form({ :component_name => component_name, :props => props })
         @http.request(@uri).body
-      rescue ExecJS::ProgramError => err
+      rescue => err
         raise React::ServerRendering::PrerenderError.new(component_name, props, err)
       end
     end
