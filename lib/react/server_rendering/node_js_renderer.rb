@@ -21,7 +21,9 @@ module React
         logger.info "prerendering #{component_name}"
         props = props.to_json
         @uri.query = URI.encode_www_form({ :component_name => component_name, :props => props })
-        @http.request(@uri).body
+        resp = @http.request(@uri)
+        logger.info resp
+        resp.body
       rescue => err
         logger.info err
         raise React::ServerRendering::PrerenderError.new(component_name, props, err)
