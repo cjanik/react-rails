@@ -10,15 +10,16 @@ module React
       # @context is not available using this class
       def initialize(options={})
         @uri = URI(options.fetch(:node_server_url, ''))
-        @http = Net::HTTP::Persistent.new name: 'server_renderer'
+        @http = Net::HTTP::Persistent.new(name: 'server_renderer')
       end
 
       def render(component_name, props, prerender_options)
-        props = props.to_json
-        @uri.query = URI.encode_www_form({ :component_name => component_name, :props => props })
-        @http.request(@uri).body
-      rescue ExecJS::ProgramError => err
-        raise React::ServerRendering::PrerenderError.new(component_name, props, err)
+        post = Net::HTTP::Post.new(@uri.path)
+        post['Content-Type'] = 'application/json'
+        post.set_form_data(component_name: component_name, props: props.to_json)
+        @http.request(@uri, post).body
+      rescue Net::HTTP::Persistent::Error => err
+        React::ServerRendering::PrerenderError.new(component_name, props, err)
       end
     end
   end
