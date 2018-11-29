@@ -25,7 +25,7 @@ module React
 
         post = Net::HTTP::Post.new @uri.path
         post['Content-Type'] = 'application/json'
-        post.set_form_data { component_name: component_name, props: props }
+        post.set_form_data { "component_name" => component_name, "props" => props }
         resp = @http.request @uri, post
 
         logger.info resp
