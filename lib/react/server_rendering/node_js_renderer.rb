@@ -24,7 +24,7 @@ module React
         # resp = @http.request(@uri)
 
         post = Net::HTTP::Post.new(@uri.path, 'Content-Type' => 'application/json')
-        post.body({ component_name: component_name, props: props }.to_json)
+        post.body = { component_name: component_name, props: props }.to_json
         resp = @http.request(@uri, post)
 
         logger.info resp
