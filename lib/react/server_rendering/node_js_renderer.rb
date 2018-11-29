@@ -20,8 +20,13 @@ module React
       def render(component_name, props, prerender_options)
         logger.info "prerendering #{component_name}"
         props = props.to_json
-        @uri.query = URI.encode_www_form({ :component_name => component_name, :props => props })
-        resp = @http.request(@uri)
+        # @uri.query = URI.encode_www_form({ :component_name => component_name, :props => props })
+        # resp = @http.request(@uri)
+
+        post = Net::HTTP::Post.new @uri.path
+        post.set_form_data({ :component_name => component_name, :props => props })
+        resp = @http.request(@uri, post)
+
         logger.info resp
         resp.body
       rescue => err
