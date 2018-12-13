@@ -410,7 +410,7 @@ end
 - `#initialize(options={})`, which accepts the hash from `config.react.server_renderer_options`
 - `#render(component_name, props, prerender_options)` to return a string of HTML
 
-`react-rails` provides two renderer classes: `React::ServerRendering::ExecJSRenderer` and `React::ServerRendering::BundleRenderer`.
+`react-rails` provides three renderer classes: `React::ServerRendering::ExecJSRenderer`, `React::ServerRendering::BundleRenderer`, and `React::ServerRendering::NodeJSRenderer`.
 
 `ExecJSRenderer` offers two other points for extension:
 
@@ -419,6 +419,36 @@ end
 
 Any subclass of `ExecJSRenderer` may use those hooks (for example, `BundleRenderer` uses them to handle `console.*` on the server).
 
+`NodeJSRenderer` makes requests to an external server, making it easier to stub a browser environment such as
+```JSX
+const { JSDOM } = require("jsdom")
+const matchMediaPolyfill = require("mq-polyfill").default
+
+const { window } = new JSDOM("<!DOCTYPE html><html><body></body></html>", {
+  url: process.env.HOST_URL,
+  referrer: process.env.HOST_URL,
+  contentType: "text/html",
+  userAgent: "test/browser"
+})
+
+window.Date = global.Date
+global.window = window
+global.document = window.document
+global.navigator = window.navigator
+```
+
+to enable the `NodeJSRenderer`
+```ruby
+# config/application.rb
+module MyApp
+  class Application < Rails::Application
+    config.react.server_renderer = React::ServerRendering::NodeJRenderer
+    config.react.server_renderer_options = {
+      node_server_url: <URL for your node service>
+    }
+  end
+end
+```
 ## Controller Actions
 
 Components can also be server-rendered directly from a controller action with the custom `component` renderer. For example:

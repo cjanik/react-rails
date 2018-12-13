@@ -31,7 +31,7 @@ module React
 
         prerender_options = options[:prerender]
         if prerender_options
-          block = Proc.new{ concat(prerender_component(name, props, prerender_options)) }
+          block = Proc.new{ concat(prerender_component(name, props, prerender_options).html_safe) }
         end
 
         html_options = options.reverse_merge(:data => {})
