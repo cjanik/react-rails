@@ -17,7 +17,8 @@ module React
         post = Net::HTTP::Post.new(@uri.path)
         post['Content-Type'] = 'application/json'
         post.set_form_data(component_name: component_name, props: props.to_json)
-        @http.request(@uri, post).body
+        response = @http.request(@uri, post)
+        response.body if response.code == "200"
       rescue Net::HTTP::Persistent::Error => err
         React::ServerRendering::PrerenderError.new(component_name, props, err)
       end
